@@ -20,7 +20,7 @@ Route::controller(AuthenticationController::class)->group(function() {
 
 Route::controller(MedController::class)->middleware('auth:sanctum')->group(function(){
     Route::middleware('check.role:admin,user')->group(function(){
-        Route::get('showall','all');
+        Route::get('all','all');
         Route::get('categories/{category:id}','categoryload');
         Route::get('/show/{med:Commercial_Name}','medshow');
     });
@@ -28,13 +28,13 @@ Route::controller(MedController::class)->middleware('auth:sanctum')->group(funct
     Route::middleware('check.role:admin')->group(function(){
         Route::get('/make', 'createMed');
         Route::post('/make', 'createMed');
-        Route::post('/edit/{med:Commercial_Name}','add');
+        Route::post('/edit/{med:cname}','add');
         Route::delete('/delete/{id}', 'delete');
     
     });
     
     Route::middleware('check.role:user')->group(function(){
-        Route::post('/edit/{med:Commercial_Name}','buy');
+        Route::post('/order','buy');
     });
 });
 

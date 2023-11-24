@@ -31,10 +31,10 @@ class MedController extends Controller
         return response()->json(['med'=>$med]);
     }
 
-    // public function all(){
-    //     $meds = Medicine::get();
-    //     return response()->json(['meds'=>$meds]);
-    // }
+     public function all(){
+         $meds = Medicine::all();
+         return response()->json(['meds'=>$meds]);
+     }
 
     public function categoryload(Category $category){
         $meds=$category->med;
@@ -45,36 +45,12 @@ class MedController extends Controller
        return response()->json(['data'=>$med]);
     }
 
-    public function buy(Medicine $med){
+    public function add(){
+        $med=request()->input('medicine');
         $num=request()->input('num');
-        $remain=$med->Remaining;
-
-        if ($num>$remain){
-            return response()->json(['message'=>"we don't have this much"]);
-        }
-
-        $newremain = $remain-$num;
-        $med->Remaining = $newremain;
-        $med->save();
-
-        return response()->json([
-            'message'=>'updated',
-            'data'=>$med
-        ]);
-
-    }
-
-    public function add(Medicine $med){
-        
-        $num=request()->input('num');
-        $remain=$med->Remaining;
-
-        if ($num>$remain){
-            return response()->json(['message'=>"we don't have this much"]);
-        }
-
+        $remain=$med->remain;
         $newremain = $remain+$num;
-        $med->Remaining = $newremain;
+        $med->remain = $newremain;
         $med->save();
 
         return response()->json([     
@@ -91,4 +67,5 @@ class MedController extends Controller
         //$data=Medicine::findorfail($id)->delete();
         return response()->json(['message'=>'product deleted']);
     }
+    
 }
