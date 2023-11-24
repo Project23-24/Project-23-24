@@ -18,12 +18,12 @@ class MedicineFactory extends Factory
     public function definition(): array
     {
         return [
-            'Scientific_Name'=>fake()->name(),
-            'Commercial_Name'=>fake()->name(),
-            'Manufacturer'=>fake()->company(),
-            'Remaining'=>fake()->numberBetween(0,2000),
-            'cost'=>fake()->numberBetween(2000,10000),
-            'category'=>Category::factory()
+            'cname' => fake()->name(),
+            'sname' => fake()->name(),
+            'manufacturer' => fake()->name(),
+            'remain' => fake()->numberBetween(1000, 2000),
+            'cost' => fake()->numberBetween(1000, 2000),
+            'category_id' =>Category::factory()
         ];
     }
 }

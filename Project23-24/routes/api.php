@@ -1,30 +1,40 @@
 <?php
 
-use App\Http\Controllers\MedController;
-use App\Models\Medicine;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\MedController;
+use Illuminate\Support\Facades\Auth;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware(['auth:sanctum', 'check.role:user'])->get('checktoken', function(){
+    return Auth::user();
 });
-Route::controller(MedController::class)->group(function () {
-    Route::get('/make', 'createMed');
-    Route::get('showall','all');
-    Route::get('categories/{category::name}','categoryload');
-    Route::post('/make', 'createMed');
-    Route::get('/show/{med:Commercial_Name}','medshow');
-    Route::post('/edit/{med:Commercial_Name}','buy');
-    Route::post('/edit/{med:Commercial_Name}','add');
-}); 
+
+Route::controller(AuthenticationController::class)->group(function() {
+    Route::post('register', 'register')->middleware('guest');
+    Route::post('login', 'login')->middleware('guest');
+    Route::post('logout', 'logout')->middleware('auth:sanctum');
+});
+
+
+Route::controller(MedController::class)->middleware('auth:sanctum')->group(function(){
+    Route::middleware('check.role:admin,user')->group(function(){
+        Route::get('showall','all');
+        Route::get('categories/{category:id}','categoryload');
+        Route::get('/show/{med:Commercial_Name}','medshow');
+    });
+
+    Route::middleware('check.role:admin')->group(function(){
+        Route::get('/make', 'createMed');
+        Route::post('/make', 'createMed');
+        Route::post('/edit/{med:Commercial_Name}','add');
+        Route::delete('/delete/{id}', 'delete');
+    
+    });
+    
+    Route::middleware('check.role:user')->group(function(){
+        Route::post('/edit/{med:Commercial_Name}','buy');
+    });
+});
+
